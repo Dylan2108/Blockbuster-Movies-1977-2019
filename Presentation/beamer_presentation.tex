@@ -1,0 +1,354 @@
+\documentclass{beamer}
+\usetheme{Madrid}
+\usecolortheme{default}
+
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{booktabs}
+\usepackage{graphicx}
+
+\title{Análisis Estadístico de Películas Blockbuster}
+\subtitle{1977 -- 2019}
+\author{
+Ronald Provance Valladares \\ 
+Agustin Alberto Carbajal Romero \\ 
+Dylan Ramsés Cabrera Morales
+}
+\institute{Universidad de La Habana | MATCOM}
+\date{}
+
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+%--------------------------------
+
+\begin{frame}{Objetivos y Motivación}
+\begin{itemize}
+\item La industria cinematográfica mueve miles de millones anualmente
+\item Comprender qué impulsa el éxito es clave para productores e inversores
+\end{itemize}
+
+\textbf{Preguntas de investigación:}
+\begin{itemize}
+\item ¿Qué factores influyen en la recaudación mundial?
+\item ¿Existen clusters de películas similares?
+\item ¿Ha cambiado la recaudación promedio con el tiempo?
+\end{itemize}
+\end{frame}
+
+%--------------------------------
+
+\begin{frame}{Descripción del Dataset}
+\begin{itemize}
+\item Fuente: Kaggle
+\item Período: 1977--2019
+\item Top 10 películas por año
+\item Total: 430 películas
+\end{itemize}
+
+\textbf{Variables principales:}
+\begin{itemize}
+\item Presupuesto: \$15M -- \$365M
+\item Recaudación
+\item Rating IMDb (1--10)
+\item Género
+\item Clasificación MPAA
+\end{itemize}
+\end{frame}
+
+%--------------------------------
+
+\begin{frame}{Estadísticos Descriptivos}
+
+\begin{tabular}{lccc}
+\toprule
+Variable & Media & Mediana & Desv. Est \\
+\midrule
+Presupuesto & \$108.5M & \$100.0M & \$67.8M \\
+Recaudación & \$698.0M & \$654.0M & \$425.0M \\
+Rating IMDb & 6.87 & 6.90 & 0.95 \\
+ROI & 6.43 & 5.52 & 6.21 \\
+\bottomrule
+\end{tabular}
+
+\vspace{0.3cm}
+
+\textbf{Hallazgos:}
+\begin{itemize}
+\item Alta variabilidad en presupuestos y recaudación
+\item Ratings generalmente altos
+\item ROI muy variable
+\end{itemize}
+\end{frame}
+
+%--------------------------------
+
+\begin{frame}{Patrones Exploratorios}
+
+\textbf{Géneros más comunes:}
+\begin{itemize}
+\item Acción (32\%)
+\item Aventura (28\%)
+\item Sci-Fi (18\%)
+\item Drama (12\%)
+\end{itemize}
+
+\textbf{Clasificación MPAA:}
+\begin{itemize}
+\item PG-13: 45\%
+\item R: 38\%
+\item PG: 12\%
+\item G: 5\%
+\end{itemize}
+
+\textbf{Conclusión clave:}  
+Películas PG-13 tienden a recaudar más.
+
+\end{frame}
+
+%--------------------------------
+
+\begin{frame}{Pregunta 1: Regresión Lineal Múltiple}
+
+Se estimó un modelo con:
+
+\begin{itemize}
+\item Presupuesto
+\item Rating IMDb
+\item Género (dummies)
+\item Clasificación MPAA (dummies)
+\end{itemize}
+
+\textbf{Tratamiento:}
+\begin{itemize}
+\item Variables continuas estandarizadas
+\item Variables categóricas codificadas
+\item Variables no significativas eliminadas
+\end{itemize}
+\end{frame}
+
+%--------------------------------
+
+\begin{frame}{Validación del Modelo}
+
+\begin{itemize}
+\item Media residuos $\approx 0$
+\item Durbin-Watson $\approx 1.44$
+\item Heterocedasticidad corregida (HC3)
+\item No multicolinealidad (Cond.\# = 4.56)
+\item Normalidad confirmada
+\end{itemize}
+\end{frame}
+
+%--------------------------------
+
+\begin{frame}{Resultados de Regresión}
+
+\textbf{Rendimiento:}
+\begin{itemize}
+\item $R^2 = 0.697$
+\item F-statistic $< 0.001$
+\end{itemize}
+
+\textbf{Factores importantes:}
+\begin{itemize}
+\item Presupuesto: +0.63\% por 1\%
+\item Rating IMDb: +13\% por punto
+\item Animación: +31\%
+\item PG-13: +32\%
+\end{itemize}
+\end{frame}
+
+%--------------------------------
+
+\begin{frame}{Conclusiones de Regresión}
+
+\begin{itemize}
+\item Presupuesto es el factor más determinante
+\item Rating influye significativamente
+\item Clasificación PG-13 amplía audiencia
+\item Animación destaca en recaudación
+\end{itemize}
+
+\textbf{Éxito = interacción de múltiples factores}
+\end{frame}
+
+%--------------------------------
+
+\begin{frame}{Pregunta 2: K-Means Clustering}
+
+\begin{itemize}
+\item Algoritmo no supervisado
+\item Variables:
+\begin{itemize}
+\item Presupuesto
+\item Rating IMDb
+\item Género
+\end{itemize}
+\item Estandarización + One-hot encoding
+\end{itemize}
+\end{frame}
+
+%--------------------------------
+
+\begin{frame}{Selección de K}
+
+\begin{tabular}{lc}
+\toprule
+Métrica & Valor \\
+\midrule
+Silhouette & 0.52 \\
+Davies-Bouldin & 0.89 \\
+Calinski-Harabasz & 185.3 \\
+\bottomrule
+\end{tabular}
+
+\vspace{0.3cm}
+
+\textbf{K óptimo: 4 clusters}
+\end{frame}
+
+%--------------------------------
+
+\begin{frame}{Clusters Identificados}
+
+\textbf{Cluster 0 – Blockbusters Probados}
+\begin{itemize}
+\item Presupuesto alto, rating alto
+\end{itemize}
+
+\textbf{Cluster 1 – Apuestas Riesgosas}
+\begin{itemize}
+\item Presupuesto muy alto, rating medio
+\end{itemize}
+
+\textbf{Cluster 2 – Joyas Ocultas}
+\begin{itemize}
+\item Presupuesto moderado, rating alto
+\end{itemize}
+
+\textbf{Cluster 3 – Estándar Masivo}
+\begin{itemize}
+\item Presupuesto y rating promedio
+\end{itemize}
+\end{frame}
+
+%--------------------------------
+
+\begin{frame}{Hallazgos Clustering}
+
+\begin{itemize}
+\item Presupuesto no garantiza éxito crítico
+\item Múltiples modelos de negocio coexisten
+\item Acción y Sci-Fi requieren mayores presupuestos
+\item Drama logra éxito con menos inversión
+\end{itemize}
+\end{frame}
+
+%--------------------------------
+
+\begin{frame}{Pregunta 3: ANOVA}
+
+\textbf{Hipótesis:}
+
+\begin{itemize}
+\item $H_0$: Recaudación igual en todas las décadas
+\item $H_1$: Alguna década difiere
+\end{itemize}
+
+\textbf{Supuestos verificados:}
+\begin{itemize}
+\item Normalidad
+\item Homogeneidad de varianzas
+\end{itemize}
+\end{frame}
+
+%--------------------------------
+
+\begin{frame}{Resultados ANOVA}
+
+\begin{tabular}{lc}
+\toprule
+Métrica & Valor \\
+\midrule
+F & 5.234 \\
+p-value & 0.0012 \\
+$\eta^2$ & 0.08 \\
+\bottomrule
+\end{tabular}
+
+\vspace{0.3cm}
+
+\textbf{Decisión:} Rechaza $H_0$
+\end{frame}
+
+%--------------------------------
+
+\begin{frame}{Recaudación por Década}
+
+\begin{itemize}
+\item 1970s: \$550.2M
+\item 1980s: \$618.5M
+\item 1990s: \$701.3M
+\item 2000s: \$742.8M
+\item 2010s: \$821.5M
+\end{itemize}
+
+Incremento del 49\% desde 1970s
+\end{frame}
+
+%--------------------------------
+
+\begin{frame}{Interpretación ANOVA}
+
+\begin{itemize}
+\item Diferencias estadísticamente significativas
+\item Década explica 8\% de la variación
+\item Otros factores también influyen fuertemente
+\end{itemize}
+
+\textbf{Tendencia creciente clara}
+\end{frame}
+
+%--------------------------------
+
+\begin{frame}{Limitaciones}
+
+\begin{itemize}
+\item Solo Top-10 por año (sesgo)
+\item Variables limitadas
+\item Período específico
+\end{itemize}
+\end{frame}
+
+%--------------------------------
+
+\begin{frame}{Conclusiones Finales}
+
+\begin{itemize}
+\item Presupuesto importa, pero no lo es todo
+\item Múltiples caminos al éxito
+\item Calidad predice recaudación
+\item Industria usa estrategias diferenciadas
+\end{itemize}
+
+\vspace{0.3cm}
+
+\textbf{El éxito no es una fórmula única}
+\end{frame}
+
+%--------------------------------
+
+\begin{frame}{Cierre}
+
+Datos: Kaggle \\
+Técnicas: Regresión, Clustering, ANOVA \\
+Período: 1977--2019 \\
+430 películas analizadas
+
+\end{frame}
+
+\end{document}
